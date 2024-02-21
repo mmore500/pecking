@@ -24,6 +24,7 @@ _pecking_ identifies the set of lowest-ranked groups and set of highest-ranked g
 >>> labels = ['Group 1', 'Group 2', 'Group 3']
 >>> pecking.skim_highest(samples, labels)
 ['Group 1']
+```
 
 ## API
 
