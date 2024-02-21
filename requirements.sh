@@ -5,4 +5,4 @@ set -u
 
 cd "$(dirname "$0")"
 
-python3.10 -m piptools compile "pyproject.toml" --extra "dev"
+python3.8 -m piptools compile "pyproject.toml" --extra "dev"
