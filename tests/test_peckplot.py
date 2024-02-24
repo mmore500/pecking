@@ -183,3 +183,82 @@ def test_peckplot_outer():
     assert g is not None
 
     plt.savefig("/tmp/test_peckplot_outer.png")
+
+
+def test_peckplot_outer_neutral():
+    plt.clf()
+    df = pd.DataFrame(
+        {
+            "A": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+            ],
+            "B": [
+                -10,
+                -9,
+                -8,
+                -5,
+                -4,
+                -9,
+                -7,
+                -6,
+                5,
+                6,
+                7,
+                8,
+                9,
+                9,
+                9,
+                9,
+                1,
+                2,
+                3,
+                4,
+                5,
+                5,
+                3,
+                5,
+            ],
+        },
+    )
+    df_a = df.copy()
+    df_a["outer"] = "a"
+    df_b = df.copy()
+    df_b["outer"] = "b"
+    concat = pd.concat([df_a, df_b])
+    g = peckplot(
+        concat,
+        score="B",
+        x="A",
+        y="B",
+        hue="A",
+        col="outer",
+        palette=sns.color_palette("tab10"),
+        skim_labels=["Worst", "Best"],
+        skim_hatches=[".O", "*"],
+    )
+    assert g is not None
+
+    plt.savefig("/tmp/test_peckplot_outer_neutral.png")
