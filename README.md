@@ -172,7 +172,7 @@ If pecking contributes to a scientific publication, please cite it as
 > Matthew Andres Moreno. (2024). mmore500/pecking. Zenodo. https://doi.org/10.5281/zenodo.10701185
 
 ```bibtex
-@software{moreno2024outset,
+@software{moreno2024pecking,
   author = {Matthew Andres Moreno},
   title = {mmore500/pecking},
   month = dec,
