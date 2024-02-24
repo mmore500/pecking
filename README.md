@@ -165,7 +165,7 @@ def peckplot(
     worst groups."""
 ```
 
-## Citation
+## Citing
 
 If pecking contributes to a scientific publication, please cite it as
 
