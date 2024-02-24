@@ -22,7 +22,11 @@ def _do_skim_lowest(
 
     # Remove samples with fewer than `min_obs` observations.
     samples_, labels_ = zip(
-        *((s, l) for s, l in zip(samples, labels) if len(s) >= min_obs)
+        *(
+            (sample, label)
+            for sample, label in zip(samples, labels)
+            if len(sample) >= min_obs
+        ),
     )
 
     if len(samples_) < len(samples):
