@@ -175,7 +175,7 @@ If pecking contributes to a scientific publication, please cite it as
 @software{moreno2024pecking,
   author = {Matthew Andres Moreno},
   title = {mmore500/pecking},
-  month = dec,
+  month = feb,
   year = 2024,
   publisher = {Zenodo},
   doi = {10.5281/zenodo.10701185},
