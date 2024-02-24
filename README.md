@@ -7,7 +7,7 @@
 [
 ![GitHub stars](https://img.shields.io/github/stars/mmore500/pecking.svg?style=round-square&logo=github&label=Stars&logoColor=white)](https://github.com/mmore500/pecking)
 
-_pecking_ identifies the set of lowest-ranked groups and set of highest-ranked groups in a dataset using nonparametric statistical tests.
+:hatching_chick: **_pecking_** identifies the set of lowest-ranked groups and set of highest-ranked groups in a dataset using nonparametric statistical tests.
 
 - Free software: MIT license
 - Repository: <https://github.com/mmore500/pecking>
