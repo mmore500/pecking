@@ -81,7 +81,8 @@ def skim_lowest(
     Parameters
     ----------
     samples : Sequence[Sequence[float]]
-        A sequence of sequences, where each inner sequence represents a sample group with numerical data.
+        A sequence of sequences, where each inner sequence represents a sample
+        group with numerical data.
     labels : Optional[Sequence[Union[str, int]]], optional
         A sequence of labels corresponding to each sample group.
 
@@ -98,7 +99,8 @@ def skim_lowest(
     Returns
     -------
     List[Union[str, int]]
-        A list of labels corresponding to the skimmed sample groups. Returns an empty list if no groups are significantly different.
+        A list of labels corresponding to the skimmed sample groups. Returns an
+        empty list if no groups are significantly different.
 
     Raises
     ------
@@ -107,7 +109,11 @@ def skim_lowest(
 
     Notes
     -----
-    The function first applies a Kruskal-Wallis H-test to determine if there is a significant difference between any of the sample groups. If a significant difference is found, it proceeds to rank the sample groups and uses multiple Mann-Whitney U-tests to skim the lowest ranked groups, adjusting the significance level (`alpha`) for multiple comparisons according to a
+    The function first applies a Kruskal-Wallis H-test to determine if there is
+    a significant difference between any of the sample groups. If a significant
+    difference is found, it proceeds to rank the sample groups and uses
+    multiple Mann-Whitney U-tests to skim the lowest ranked groups, adjusting
+    the significance level (`alpha`) for multiple comparisons according to a
     sequential Holm-Bonferroni program.
 
     Examples
