@@ -36,7 +36,9 @@ def robust_groupby(
         None as the key and the original DataFrame.
     """
     by = list(filter(bool, by))
-    if by:
+    if len(by) == 1:
+        return data.groupby(by=by[0], **{"observed": True, **kwargs})
+    elif len(by):
         return data.groupby(by=by, **{"observed": True, **kwargs})
     else:
         return [(None, data)]
