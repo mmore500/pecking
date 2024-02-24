@@ -183,5 +183,5 @@ If pecking contributes to a scientific publication, please cite it as
 }
 ```
 
-Consider also citing [matplotlib](https://matplotlib.org/stable/users/project/citing.html) and [seaborn](https://seaborn.pydata.org/citing.html).
+Consider also citing [matplotlib](https://matplotlib.org/stable/users/project/citing.html), [seaborn](https://seaborn.pydata.org/citing.html), and [SciPy](https://scipy.org/citing-scipy/).
 And don't forget to leave a [star on GitHub](https://github.com/mmore500/pecking/stargazers)!
