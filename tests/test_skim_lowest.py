@@ -50,3 +50,13 @@ def test_skim_lowest_three_groups_insig():
     labels = ["Bottom", "Middle", "Top"]
 
     assert skim_lowest(samples, labels) == []
+
+
+def test_skim_lowest_singular():
+    group1 = [1, 1, 1]
+    group2 = [1, 1, 1]
+
+    samples = [group1, group2]
+    labels = ["Bottom", "Middle"]
+
+    assert skim_lowest(samples, labels) == []
