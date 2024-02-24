@@ -1,0 +1,13 @@
+cff-version: 1.1.0
+message: "If you use this software, please cite it as below."
+title: 'pecking: a Python library for nonparametric comparison between groups'
+abstract: "pecking identifies the set of lowest-ranked groups and set of highest-ranked groups in a dataset using nonparametric statistical tests."
+authors:
+- family-names: Moreno
+  given-names: Matthew Andres
+  orcid: 0000-0003-4726-4479
+date-released: 2024-02-24
+doi: 10.5281/zenodo.10701185
+license: MIT
+repository-code: https://github.com/mmore500/pecking
+url: "https://github.com/mmore500/pecking"
