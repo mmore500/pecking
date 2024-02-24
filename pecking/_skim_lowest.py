@@ -116,6 +116,25 @@ def skim_lowest(
         Significance level for the statistical tests.
 
         Used to determine if the difference between groups is significant.
+    min_obs : int, default 0
+        The minimum number of observations required for a sample to be included
+        in the analysis.
+
+        Samples with fewer observations than `min_obs` will be omitted from
+        skimming. Useful especially if the lowest ranked group has very few
+        observations so cannot be meaningfully compared to the others.
+    nan_policy : {'propagate', 'raise', 'omit'}, default 'raise'
+        Defines how to handle NaNs in the input data.
+
+            'propagate': If a NaN is present in the data, the corresponding
+            output will be NaN.
+
+            'omit': NaNs will be omitted from the calculations. If insufficient
+            data remains after omitting NaNs, the corresponding output will be
+            NaN.
+
+            'raise': If a NaN is detected in the input data, a ValueError will
+            be raised.
     reverse : bool, default False
         If True, skims the highest ranked samples instead of the lowest.
 
