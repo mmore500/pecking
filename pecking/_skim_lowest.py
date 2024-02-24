@@ -12,15 +12,28 @@ def _do_skim_lowest(
     labels: typing.Optional[typing.Sequence[typing.Union[str, int]]] = None,
     *,
     alpha: float = 0.05,
+    min_obs: int = 0,
     nan_policy: typing.Literal["propagate", "raise", "omit"] = "raise",
     reverse: bool = False,
 ) -> typing.List[typing.Union[str, int]]:
     """Implementation detail for skim_lowest."""
-    if len(samples) < 2:
-        raise ValueError("At least two samples are required.")
-
     if labels is None:
         labels = [*range(len(samples))]
+
+    # Remove samples with fewer than `min_obs` observations.
+    samples_, labels_ = zip(
+        *((s, l) for s, l in zip(samples, labels) if len(s) >= min_obs)
+    )
+
+    if len(samples_) < len(samples):
+        warnings.warn(
+            f"Skipped {len(samples) - len(samples_)} samples with fewer than "
+            f"{min_obs} observations.",
+        )
+    samples, labels = samples_, labels_
+
+    if len(samples) < 2:
+        raise ValueError("At least two samples are required.")
 
     h, p_kruskal = scipy_stats.kruskal(*samples, nan_policy=nan_policy)
     assert 0 <= p_kruskal <= 1 or np.isnan(p_kruskal)
@@ -82,6 +95,7 @@ def skim_lowest(
     labels: typing.Optional[typing.Sequence[typing.Union[str, int]]] = None,
     *,
     alpha: float = 0.05,
+    min_obs: int = 0,
     nan_policy: typing.Literal["propagate", "raise", "omit"] = "raise",
     reverse: bool = False,
 ) -> typing.List[typing.Union[str, int]]:
@@ -136,7 +150,12 @@ def skim_lowest(
     """
     try:
         return _do_skim_lowest(
-            samples, labels, alpha=alpha, nan_policy=nan_policy, reverse=reverse
+            samples,
+            labels,
+            alpha=alpha,
+            min_obs=min_obs,
+            nan_policy=nan_policy,
+            reverse=reverse,
         )
     except ValueError as e:
         warnings.warn(f"ValueError `{e}` ocurred. No groups skimmed.")

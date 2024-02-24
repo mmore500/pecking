@@ -341,12 +341,25 @@ def test_peckplot_titanic():
         hue="class",
         col="survived",
         skimmers=(
-            functools.partial(skim_highest, alpha=0.05, nan_policy="omit"),
-            functools.partial(skim_lowest, alpha=0.05, nan_policy="omit"),
+            functools.partial(
+                skim_highest, alpha=0.05, min_obs=8, nan_policy="omit"
+            ),
+            functools.partial(
+                skim_lowest, alpha=0.05, min_obs=8, nan_policy="omit"
+            ),
         ),
         palette=sns.color_palette("tab10")[:3],
     )
     assert g is not None
-    g.map_dataframe(sns.swarmplot, x="who", y="age", hue="class", dodge=True)
+    g.map_dataframe(
+        sns.stripplot,
+        x="who",
+        y="age",
+        hue="class",
+        s=2,
+        color="black",
+        dodge=True,
+        jitter=0.3,
+    )
 
     plt.savefig("/tmp/test_peckplot_titanic.png")

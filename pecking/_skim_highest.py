@@ -8,6 +8,7 @@ def skim_highest(
     labels: typing.Optional[typing.Sequence[typing.Union[str, int]]] = None,
     *,
     alpha: float = 0.05,
+    min_obs: int = 0,
     nan_policy: typing.Literal["propagate", "raise", "omit"] = "raise",
 ) -> typing.List[typing.Union[str, int]]:
     """Identify the set of highest-ranked groups that are statistically
@@ -20,6 +21,7 @@ def skim_highest(
         samples,
         labels,
         alpha=alpha,
+        min_obs=min_obs,
         nan_policy=nan_policy,
         reverse=True,
     )
