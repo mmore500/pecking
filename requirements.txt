@@ -6,6 +6,8 @@
 #
 attrs==23.2.0
     # via pytest
+backstrip==0.2.3
+    # via pecking (pyproject.toml)
 black==22.10.0
     # via pecking (pyproject.toml)
 build==1.0.3
@@ -16,24 +18,56 @@ click==8.1.7
     # via
     #   black
     #   pip-tools
+contourpy==1.1.1
+    # via matplotlib
+cycler==0.12.1
+    # via matplotlib
+fonttools==4.49.0
+    # via matplotlib
+frozendict==2.4.0
+    # via backstrip
 importlib-metadata==7.0.1
     # via build
+importlib-resources==6.1.1
+    # via matplotlib
 iniconfig==2.0.0
     # via pytest
 isort==5.12.0
     # via pecking (pyproject.toml)
+kiwisolver==1.4.5
+    # via matplotlib
+matplotlib==3.7.5
+    # via
+    #   backstrip
+    #   pecking (pyproject.toml)
+    #   seaborn
 mypy-extensions==1.0.0
     # via black
 numpy==1.24.4
     # via
+    #   backstrip
+    #   contourpy
+    #   matplotlib
+    #   pandas
     #   pecking (pyproject.toml)
     #   scipy
+    #   seaborn
+opytional==0.1.0
+    # via backstrip
 packaging==23.2
     # via
     #   build
+    #   matplotlib
     #   pytest
+pandas==2.0.3
+    # via
+    #   backstrip
+    #   pecking (pyproject.toml)
+    #   seaborn
 pathspec==0.12.1
     # via black
+pillow==10.2.0
+    # via matplotlib
 pip-tools==7.3.0
     # via pecking (pyproject.toml)
 platformdirs==4.2.0
@@ -42,14 +76,28 @@ pluggy==1.4.0
     # via pytest
 py==1.11.0
     # via pytest
+pyparsing==3.1.1
+    # via matplotlib
 pyproject-hooks==1.0.0
     # via build
 pytest==6.2.5
     # via pecking (pyproject.toml)
+python-dateutil==2.8.2
+    # via
+    #   matplotlib
+    #   pandas
+pytz==2024.1
+    # via pandas
 ruff==0.1.11
     # via pecking (pyproject.toml)
 scipy==1.10.1
     # via pecking (pyproject.toml)
+seaborn==0.13.2
+    # via
+    #   backstrip
+    #   pecking (pyproject.toml)
+six==1.16.0
+    # via python-dateutil
 toml==0.10.2
     # via pytest
 tomli==2.0.1
@@ -60,10 +108,14 @@ tomli==2.0.1
     #   pyproject-hooks
 typing-extensions==4.9.0
     # via black
+tzdata==2024.1
+    # via pandas
 wheel==0.42.0
     # via pip-tools
 zipp==3.17.0
-    # via importlib-metadata
+    # via
+    #   importlib-metadata
+    #   importlib-resources
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
