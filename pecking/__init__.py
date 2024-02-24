@@ -6,10 +6,12 @@ __version__ = "0.1.0"
 __maintainer__ = "Matthew Andres Moreno"
 __email__ = "m.more500@gmail.com"
 
+from ._mask_skimmed_rows import mask_skimmed_rows
 from ._skim_highest import skim_highest
 from ._skim_lowest import skim_lowest
 
 __all__ = [
+    "mask_skimmed_rows",
     "skim_highest",
     "skim_lowest",
 ]
