@@ -1,9 +1,11 @@
+import functools
+
 from matplotlib import pyplot as plt
 import pandas as pd
 import pytest
 import seaborn as sns
 
-from pecking import peckplot
+from pecking import peckplot, skim_highest, skim_lowest
 
 
 def test_peckplot_empty():
@@ -326,3 +328,25 @@ def test_peckplot_outer_neutral():
     assert g is not None
 
     plt.savefig("/tmp/test_peckplot_outer_neutral.png")
+
+
+def test_peckplot_titanic():
+    plt.clf()
+    data = sns.load_dataset("titanic")
+    g = peckplot(
+        data,
+        score="age",
+        x="who",
+        y="age",
+        hue="class",
+        col="survived",
+        skimmers=(
+            functools.partial(skim_highest, alpha=0.05, nan_policy="omit"),
+            functools.partial(skim_lowest, alpha=0.05, nan_policy="omit"),
+        ),
+        palette=sns.color_palette("tab10")[:3],
+    )
+    assert g is not None
+    g.map_dataframe(sns.swarmplot, x="who", y="age", hue="class", dodge=True)
+
+    plt.savefig("/tmp/test_peckplot_titanic.png")

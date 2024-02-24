@@ -10,7 +10,9 @@ from scipy import stats as scipy_stats
 def _do_skim_lowest(
     samples: typing.Sequence[typing.Sequence[float]],
     labels: typing.Optional[typing.Sequence[typing.Union[str, int]]] = None,
+    *,
     alpha: float = 0.05,
+    nan_policy: typing.Literal["propagate", "raise", "omit"] = "raise",
     reverse: bool = False,
 ) -> typing.List[typing.Union[str, int]]:
     """Implementation detail for skim_lowest."""
@@ -20,9 +22,11 @@ def _do_skim_lowest(
     if labels is None:
         labels = [*range(len(samples))]
 
-    h, p_kruskal = scipy_stats.kruskal(*samples)
-    assert 0 <= p_kruskal <= 1
-    if p_kruskal > alpha:
+    h, p_kruskal = scipy_stats.kruskal(*samples, nan_policy=nan_policy)
+    assert 0 <= p_kruskal <= 1 or np.isnan(p_kruskal)
+    if np.isnan(p_kruskal) and nan_policy == "raise":
+        raise ValueError("Kruskal-Wallis H test returned NaN p-value.")
+    if p_kruskal > alpha or np.isnan(p_kruskal):
         return []
 
     population = sorted([*it.chain(*samples)], reverse=reverse)
@@ -50,10 +54,15 @@ def _do_skim_lowest(
             samples[position],
             samples[rank_mean_order[0]],
             alternative="less" if reverse else "greater",
+            nan_policy=nan_policy,
         )
-        assert 0 <= p <= 1
+        assert 0 <= p <= 1 or np.isnan(p), p
+        if np.isnan(p) and nan_policy == "raise":
+            raise ValueError("Mann-Whitney U test returned NaN p-value.")
         if p > alpha_:
             skimmed.append(labels[position])
+        elif np.isnan(p):
+            continue
         else:
             break
 
@@ -71,7 +80,9 @@ def _do_skim_lowest(
 def skim_lowest(
     samples: typing.Sequence[typing.Sequence[float]],
     labels: typing.Optional[typing.Sequence[typing.Union[str, int]]] = None,
+    *,
     alpha: float = 0.05,
+    nan_policy: typing.Literal["propagate", "raise", "omit"] = "raise",
     reverse: bool = False,
 ) -> typing.List[typing.Union[str, int]]:
     """Identify the set of lowest-ranked groups that are statistically
@@ -124,7 +135,9 @@ def skim_lowest(
     ['Group 1']
     """
     try:
-        return _do_skim_lowest(samples, labels, alpha, reverse)
+        return _do_skim_lowest(
+            samples, labels, alpha=alpha, nan_policy=nan_policy, reverse=reverse
+        )
     except ValueError as e:
         warnings.warn(f"ValueError `{e}` ocurred. No groups skimmed.")
         return []
