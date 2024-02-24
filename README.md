@@ -6,6 +6,7 @@
 ](https://github.com/mmore500/pecking/actions)
 [
 ![GitHub stars](https://img.shields.io/github/stars/mmore500/pecking.svg?style=round-square&logo=github&label=Stars&logoColor=white)](https://github.com/mmore500/pecking)
+[![DOI](https://zenodo.org/badge/760949154.svg)](https://zenodo.org/doi/10.5281/zenodo.10701184)
 
 :hatching_chick: **_pecking_** identifies the set of lowest-ranked groups and set of highest-ranked groups in a dataset using nonparametric statistical tests.
 
@@ -163,3 +164,24 @@ def peckplot(
     `backstrip`'s `backplot` to add hatched backgrounds behind the best and
     worst groups."""
 ```
+
+## Citation
+
+If pecking contributes to a scientific publication, please cite it as
+
+> Matthew Andres Moreno. (2024). mmore500/pecking. Zenodo. https://doi.org/10.5281/zenodo.10701185
+
+```bibtex
+@software{moreno2024outset,
+  author = {Matthew Andres Moreno},
+  title = {mmore500/pecking},
+  month = dec,
+  year = 2024,
+  publisher = {Zenodo},
+  doi = {10.5281/zenodo.10701185},
+  url = {https://doi.org/10.5281/zenodo.10701185}
+}
+```
+
+Consider also citing [matplotlib](https://matplotlib.org/stable/users/project/citing.html) and [seaborn](https://seaborn.pydata.org/citing.html).
+And don't forget to leave a [star on GitHub](https://github.com/mmore500/pecking/stargazers)!
