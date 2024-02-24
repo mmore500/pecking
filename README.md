@@ -72,6 +72,12 @@ plt.show()
 
 ## API
 
+See function docstrings for full parameter and return value descriptions.
+
+### `pecking.skim_lowest`/`pecking.skim_highest`
+
+Direct interface to the underlying statistical tests.
+
 ```python3
 def skim_highest(
     samples: typing.Sequence[typing.Sequence[float]],
@@ -94,4 +100,66 @@ def skim_highest(
     followed by multiple Mann-Whitney U-tests."""
 ```
 
-See function docstrings for full parameter and return value descriptions.
+### `pecking.mask_skimmed_rows`
+
+Tidy-data interface to calculate the results of `skim_lowest`/`skim_highest` among row groups in a DataFrame.
+
+```python3
+def mask_skimmed_rows(
+    data: pd.DataFrame,
+    score: str,
+    groupby_inner: typing.Union[typing.Sequence[str], str],
+    groupby_outer: typing.Union[typing.Sequence[str], str] = tuple(),
+    skimmer: typing.Callable = skim_highest,
+    **kwargs: dict,
+) -> pd.Series:
+    """Create a boolean mask for a DataFrame, identifying rows within
+    significantly outstanding groups.
+
+    This function applies a two-level grouping to the input DataFrame: an outer
+    grouping ('groupby_outer') followed by an inner grouping ('groupby_inner').
+    For each inner group, it uses a 'skimmer' function to determine which rows
+    are part of significantly outstanding groups based on a specified 'score'
+    column. Only inner groups within the same outer group are compared.
+
+    Rows identified as members of significantly outstanding inner groups are
+    marked True in the returned Series, while all others are marked False."""
+```
+
+### `pecking.peckplot`
+
+Wraps `seaborn.catplot` to add hatched backgrounds behind the best and worst groups within the each `row`/`col` facet.
+(Comparison scope/pooling can be controlled with `*_group` parameters.)
+
+```python3
+def peckplot(
+    data: pd.DataFrame,
+    score: str,
+    x: typing.Optional[str] = None,
+    y: typing.Optional[str] = None,
+    hue: typing.Optional[str] = None,
+    col: typing.Optional[str] = None,
+    row: typing.Optional[str] = None,
+    x_group: typing.Literal["inner", "outer", "ignore"] = "inner",
+    y_group: typing.Literal["inner", "outer", "ignore"] = "inner",
+    hue_group: typing.Literal["inner", "outer", "ignore"] = "inner",
+    col_group: typing.Literal["inner", "outer", "ignore"] = "outer",
+    row_group: typing.Literal["inner", "outer", "ignore"] = "outer",
+    skimmers: typing.Sequence[typing.Callable] = (
+        functools.partial(skim_highest, alpha=0.05),
+        functools.partial(skim_lowest, alpha=0.05),
+    ),
+    skim_hatches: typing.Sequence[str] = ("*", "O.", "xx", "++"),
+    skim_labels: typing.Sequence[str] = ("Best", "Worst"),
+    skim_title: typing.Optional[str] = "Rank",
+    orient: typing.Literal["v", "h"] = "v",
+    **kwargs: dict,
+) -> sns.FacetGrid:
+    """Boxplot the distribution of a score across various categories,
+    highlighting the best (and/or worst) performing groups.
+
+    Uses nonparametric `skim_highest`/`skim_lowest` to distinguish the sets of
+    groups with statistically indistinguishable highest/lowest scores. Uses
+    `backstrip`'s `backplot` to add hatched backgrounds behind the best and
+    worst groups."""
+```

@@ -33,6 +33,75 @@ def peckplot(
     orient: typing.Literal["v", "h"] = "v",
     **kwargs: dict,
 ) -> sns.FacetGrid:
+    """Boxplot the distribution of a score across various categories,
+    highlighting the best (and/or worst) performing groups.
+
+    Uses nonparametric `skim_highest`/`skim_lowest` to distinguish the sets of
+    groups with statistically indistinguishable highest/lowest scores. Uses
+    `backstrip`'s `backplot` to add hatched backgrounds behind the best and
+    worst groups.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        Input dataset, where each row is an observation and each column is a feature.
+    score : str
+        Column name in `data` representing the score to rank groups by.
+
+        Usually this will be the same column name as `x` (if vertical) or `y`
+        (if horizontal).
+    x, y : Optional[str], default=None
+        Column names in `data` for the x and y axes.
+
+        Equivalent interpretation to `x` and `y` in `seaborn.catplot`.
+    hue : Optional[str], default=None
+        Column name in `data` for coloring elements based on its values.
+
+        Equivalent interpretation to `hue` in `seaborn.catplot`.
+    col, row : Optional[str], default=None
+        Column names for facet wrapping the plot grid.
+
+        Equivalent interpretation to `col`/`row` in `seaborn.catplot`.
+    x_group, y_group, hue_group : {'inner', 'outer', 'ignore'}, default='inner'
+        Grouping strategies for x, y, and hue variables.
+
+        By default, `skim_highest`/`skim_lowest` comparison is made among all
+        individually boxplotted groups within the same facet. To only compare
+        among hue sets, set `x_group` (if vertical) or `y_group` (if
+        horizontal) to 'outer'. To pool hue sets together, set `hue_group` to
+        'ignore'.
+    col_group, row_group : {'inner', 'outer', 'ignore'}, default='outer'
+        Grouping strategies col, and row variables.
+
+        By default, `skim_highest`/`skim_lowest` comparisons are made
+        independently within each facet. To make comparison span across all
+        facets, set `col_group` and `row_group` to 'inner'.
+    skimmers : Sequence[Callable], default=(skim_highest, skim_lowest)
+        Functions to identify top and bottom groups based on `score`.
+
+        Use `functools.partial` to pass non-default kwargs to the skimming
+        functions.
+    skim_hatches : Sequence[str], default=("*", "O.", "xx", "++")
+        Hatch patterns for highlighting skimmer-identified groups.
+
+        Default patterns are Star for "Best" group and concentric circles for
+        "Worst" group.
+    skim_labels : Sequence[str], default=("Best", "Worst")
+        Labels for the skimmer-identified groups.
+    skim_title : Optional[str], default="Rank"
+       Legend title for skimmer-identified group hatchings.
+    orient : {'v', 'h'}, default='v'
+        Orientation of the plot ('v' for vertical, 'h' for horizontal).
+
+        Equivalent interpretation to `orient` in `seaborn.catplot`.
+    **kwargs : dict
+        Additional keyword arguments passed to `backstrip.backplot`.
+
+    Returns
+    -------
+    sns.FacetGrid
+        A figure-level seaborn FacetGrid object.
+    """
     if len(data) == 0:
         raise ValueError("Data must not be empty.")
 
