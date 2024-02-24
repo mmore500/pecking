@@ -1,16 +1,16 @@
+import itertools as it
 import typing
 
 import pandas as pd
 
-from ._robust_groupby import robust_groupby
 from ._skim_highest import skim_highest
 
 
 def mask_skimmed_rows(
     data: pd.DataFrame,
     score: str,
-    groupby_inner: typing.Sequence[str],
-    groupby_outer: typing.Sequence[str] = tuple(),
+    groupby_inner: typing.Union[typing.Sequence[str], str],
+    groupby_outer: typing.Union[typing.Sequence[str], str] = tuple(),
     skimmer: typing.Callable = skim_highest,
     **kwargs: dict,
 ) -> pd.Series:
@@ -32,18 +32,19 @@ def mask_skimmed_rows(
         The DataFrame on which the masking operation will be performed.
     score : str
         The name of the column in 'data' that should be used to compare groups.
-    groupby_inner : Sequence[str]
-        A sequence of column names in 'data' used for the inner grouping
-        operation.
+    groupby_inner : Union[Sequence[str], str]
+        Column name(s) in 'data' used for the inner grouping operation.
 
-        Each unique combination of values in these columns defines an inner
-        group.
-    groupby_outer : Sequence[str], optional
-        A sequence of column names in 'data' used for the outer grouping
-        operation.
+        The inner grouping operation determines the groups of rows that will be
+        compared by `skimmer`. Each unique combination of values in these
+        columns defines an inner group.
+    groupby_outer : Union[Sequence[str], str], optional
+        Column name(s) in 'data' used for the outer grouping operation.
 
-        Each unique combination of values in these columns defines an outer
-        group. If not provided, no outer grouping is performed.
+        The outer grouping splits the dataset into independent parts, within
+        each of which separate comparisons are made by `skimmer` between inner
+        groups. Each unique combination of values in these columns defines an
+        outer group. If not provided, no outer grouping is performed.
     skimmer : Callable, default `pecking.skim_highest`
         A function that identifies significant rows within each inner group.
 
@@ -62,20 +63,39 @@ def mask_skimmed_rows(
         significantly outstanding group as determined by the 'skimmer'
         function.
     """
-    mask = pd.Series(False, index=data.index)
     if len(data) == 0:
-        return mask
+        return pd.Series(False, index=data.index)
 
-    for _key, outer_group in robust_groupby(data, by=groupby_outer):
-        outer_group_df = outer_group.reset_index()
+    if isinstance(groupby_inner, str):
+        groupby_inner = [groupby_inner]
 
-        inner_groupby = outer_group_df.groupby(groupby_inner)
-        __, inner_groups = zip(*inner_groupby[score])
-        inner_group_indices = [
-            *outer_group_df.groupby(groupby_inner).indices.values(),
-        ]
-        skimmed = skimmer(inner_groups, inner_group_indices, **kwargs)
-        for skim in skimmed:
-            mask.loc[skim] = True
+    if isinstance(groupby_outer, str):
+        groupby_outer = [groupby_outer]
 
-    return mask
+    if len(groupby_inner) == 0:
+        raise ValueError("At least one inner grouping variable must be used.")
+
+    data = data.copy()
+    data["_pecking_mask"] = False
+
+    def skim_transform(outer_group: pd.DataFrame) -> pd.DataFrame:
+        outer_group["_pecking_index"] = outer_group.index
+        inner_groups = outer_group.groupby(groupby_inner, as_index=False)
+        inner_scores = [g for _k, g in inner_groups[score]]
+        inner_indices = [g for _k, g in inner_groups["_pecking_index"]]
+
+        skimmed_indices = skimmer(inner_scores, inner_indices, **kwargs)
+        flat_indices = [*it.chain(*skimmed_indices)]
+        outer_group.loc[flat_indices, "_pecking_mask"] = True
+        return outer_group
+
+    if groupby_outer:
+        grouped_data = data.groupby(
+            groupby_outer, as_index=False, group_keys=False
+        ).apply(
+            skim_transform,
+        )
+    else:
+        grouped_data = skim_transform(data)
+
+    return grouped_data["_pecking_mask"]
