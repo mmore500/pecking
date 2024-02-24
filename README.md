@@ -12,6 +12,7 @@
 
 - Free software: MIT license
 - Repository: <https://github.com/mmore500/pecking>
+- Documentation: <https://github.com/mmore500/pecking/blob/master/README.md>
 
 ## Install
 
