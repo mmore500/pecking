@@ -1,6 +1,6 @@
 [project]
 name = "pecking"
-version = "0.2.0"
+version = "0.2.1"
 description = "pecking identifies the set of lowest-ranked groups and set of highest-ranked groups in a dataset using nonparametric statistical tests"
 authors = [
     { name = "Matthew Andres Moreno", email = "m.more500@gmail.com" },
