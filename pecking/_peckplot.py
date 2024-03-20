@@ -18,6 +18,8 @@ def peckplot(
     hue: typing.Optional[str] = None,
     col: typing.Optional[str] = None,
     row: typing.Optional[str] = None,
+    order: typing.Optional[typing.Sequence[str]] = None,
+    hue_order: typing.Optional[typing.Sequence[str]] = None,
     x_group: typing.Literal["inner", "outer", "ignore"] = "inner",
     y_group: typing.Literal["inner", "outer", "ignore"] = "inner",
     hue_group: typing.Literal["inner", "outer", "ignore"] = "inner",
@@ -62,6 +64,14 @@ def peckplot(
         Column names for facet wrapping the plot grid.
 
         Equivalent interpretation to `col`/`row` in `seaborn.catplot`.
+    order : Optional[Sequence[str]], default=None
+        Order of the x or y axis levels.
+
+        Equivalent interpretation to `order` in `seaborn.catplot`.
+    hue_order : Optional[Sequence[str]], default=None
+        Order of the hue levels.
+
+        Equivalent interpretation to `hue_order` in `seaborn.catplot`.
     x_group, y_group, hue_group : {'inner', 'outer', 'ignore'}, default='inner'
         Grouping strategies for x, y, and hue variables.
 
@@ -105,13 +115,25 @@ def peckplot(
     if len(data) == 0:
         raise ValueError("Data must not be empty.")
 
+    xy = {"v": x, "h": y}[orient]
+    if xy is not None and order is None:
+        order = sorted(data[xy].unique())
+    if hue is not None and hue_order is None:
+        hue_order = sorted(data[hue].unique())
+
+    all_mask = pd.Series(data=True, index=data.index)
+    data = data[
+        (data[xy].isin(order) if xy is not None else all_mask)
+        & (data[hue].isin(hue_order) if hue is not None else all_mask)
+    ].reset_index(drop=True)
+
     groupby_inner = []
     groupby_outer = []
-    if {"v": x, "h": y}[orient] is not None:
+    if xy is not None:
         group = {"v": x_group, "h": y_group}[orient]
         {"inner": groupby_inner, "outer": groupby_outer, "ignore": list()}[
             group
-        ].append({"v": x, "h": y}[orient])
+        ].append(xy)
     if hue is not None and hue_group != "ignore":
         {"inner": groupby_inner, "outer": groupby_outer}[hue_group].append(hue)
     if col is not None and col_group != "ignore":
@@ -155,6 +177,8 @@ def peckplot(
         hue=hue,
         col=col,
         row=row,
+        order=order,
+        hue_order=hue_order,
         style=skim_title,
         style_order=skim_labels,
         hatches=skim_hatches,
