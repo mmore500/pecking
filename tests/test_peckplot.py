@@ -1,4 +1,5 @@
 import functools
+import os
 
 from matplotlib import pyplot as plt
 import pandas as pd
@@ -365,3 +366,36 @@ def test_peckplot_titanic():
     )
 
     plt.savefig("/tmp/test_peckplot_titanic.png")
+
+
+def test_peckplot_order():
+    df = pd.read_csv(f"{os.path.dirname(__file__)}/assets/hstrat-sample.csv")
+
+    x_order = [
+        "surf-steady",
+        "surf-hybrid",
+        "surf-tilted",
+    ]
+    hue_order = [
+        "npop4096-ngen100000",
+        "npop65536-ngen100000",
+    ]
+
+    peckplot(
+        data=df.reset_index(drop=True),
+        kind="box",
+        score="value",
+        x="Algorithm",
+        y="value",
+        col="Scenario",
+        row="variable",
+        hue="Scale",
+        x_group="outer",
+        hue_group="inner",
+        order=x_order,
+        hue_order=hue_order,
+        margin_titles=True,
+        legend_width_inches=3,
+    )
+
+    plt.savefig("/tmp/test_peckplot_order.png")
