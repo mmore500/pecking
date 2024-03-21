@@ -399,3 +399,34 @@ def test_peckplot_order():
     )
 
     plt.savefig("/tmp/test_peckplot_order.png")
+
+
+def test_peckplot_overlapped_skims():
+    df = pd.read_csv(f"{os.path.dirname(__file__)}/assets/hstrat-sample.csv")
+
+    hue_order = [
+        "surf-steady",
+        "surf-hybrid",
+        "surf-tilted",
+    ]
+    x_order = ["Triplet\nDistance", "Inner\nNode\nLoss"]
+
+    peckplot(
+        data=df,
+        score="value",
+        x="variable",
+        y="value",
+        col="Scenario",
+        row="Scale",
+        hue="Algorithm",
+        x_group="outer",
+        hue_group="inner",
+        order=x_order,
+        hue_order=hue_order,
+        skim_hatches=("..OO", "*"),
+        skim_labels=("Worst", "Best"),
+        margin_titles=True,
+        legend_width_inches=3,
+    )
+
+    plt.savefig("/tmp/test_peckplot_hstrat.png")

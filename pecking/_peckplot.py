@@ -1,7 +1,9 @@
 import functools
 import typing
+import warnings
 
 from backstrip import backplot
+import numpy as np
 import pandas as pd
 import seaborn as sns
 
@@ -154,21 +156,46 @@ def peckplot(
         )
         for skimmer in skimmers
     ]
-    if any(sum(tup) > 1 for tup in zip(*masks)):
-        raise ValueError("Overlapping groups were identified by the skimmers.")
 
     if "_" in skim_labels:
         raise ValueError("The label '_' is reserved for unskimmed groups.")
 
-    data = data.copy()
-    data[skim_title] = pd.Series(
-        [
-            skim_labels[tup.index(True)] if any(tup) else "_"
-            for tup in zip(*masks)
-        ],
-        dtype="string",
-        index=data.index,
-    )
+    mask_overlaps = np.stack(masks).sum(axis=0)
+    assert len(mask_overlaps) == len(data)
+    if (mask_overlaps > 1).any():
+        max_overlap = mask_overlaps.max()
+        num_overlapping_rows = mask_overlaps.astype(bool).sum()
+        warnings.warn(
+            f"{num_overlapping_rows} rows overlap between skimmers, with rows "
+            f"overlapped between at most {max_overlap} skimmers.",
+        )
+
+    if mask_overlaps.any():
+        # if there are any overlapping skims, create an independent copy of the
+        # data for each skim label and with column masking just that skim
+        # ... backplot combines overlapping hatches if a group has multiple
+        # style values, and a boxplot with the duplicated or triplicated etc.
+        # data will lay out the same way as the just original data
+        concat = []
+        for i, label in enumerate(skim_labels):
+            data_ = data.copy()
+            data_[skim_title] = pd.Series(
+                [label if tup[i] else "_" for tup in zip(*masks)],
+                dtype="string",
+                index=data_.index,
+            )
+            concat.append(data_)
+        data = pd.concat(concat, ignore_index=True)
+    else:
+        data = data.copy()
+        data[skim_title] = pd.Series(
+            [
+                skim_labels[tup.index(True)] if any(tup) else "_"
+                for tup in zip(*masks)
+            ],
+            dtype="string",
+            index=data.index,
+        )
 
     return backplot(
         data=data,
