@@ -32,10 +32,10 @@ file = "README.md"
 content-type = "text/markdown"
 
 [project.urls]
-homepage = "https://github.com/mmore500/pytest"
-documentation = "https://github.com/mmore500/pytest"
-repository = "https://github.com/mmore500/pytest"
-tracker = "https://github.com/mmore500/pytest/issues"
+homepage = "https://github.com/mmore500/pecking"
+documentation = "https://github.com/mmore500/pecking/blob/master/README.md"
+repository = "https://github.com/mmore500/pecking"
+tracker = "https://github.com/mmore500/pecking/issues"
 
 [project.optional-dependencies]
 dev = [
